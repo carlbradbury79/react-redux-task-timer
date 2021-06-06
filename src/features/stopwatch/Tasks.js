@@ -1,5 +1,7 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
+import { Task } from './Task';
+import { TotalTime } from './TotalTime';
 
 export function DisplayTasks() {
   // Access the state
@@ -15,15 +17,11 @@ export function DisplayTasks() {
       <ul>
         {tasks.map((task) => {
           // Display each task
-          return (
-            <li key={task.id}>
-              {task.task}, {task.time}
-            </li>
-          );
+          return <Task key={task.taskName} task={task} />;
         })}
       </ul>
       {/* Display total time if state not empty */}
-      {total !== null && <p>Total time: {total}</p>}
+      {total !== null && <TotalTime seconds={total} />}
     </div>
   );
 }

@@ -1,10 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { useDispatch } from 'react-redux';
-import { addTask } from './stopwatchSlice';
+import { useDispatch, useSelector } from 'react-redux';
+import { addTask, editTask } from './stopwatchSlice';
 
 export function Stopwatch() {
   // Access the actions
   const dispatch = useDispatch();
+
+  // Access the state
+  const tasks = useSelector((state) => state.stopwatch);
 
   // Local state for timer
   const [seconds, setSeconds] = useState(0);
@@ -12,12 +15,11 @@ export function Stopwatch() {
 
   // Local state for the form
   const [formData, setFormData] = useState({
-    id: '',
-    task: '',
+    taskName: '',
   });
 
-  // Destructure form
-  const { id, task } = formData;
+  // Destructure form fields
+  const { taskName } = formData;
 
   // Handler for the form
   const onChange = (e) => {
@@ -39,11 +41,16 @@ export function Stopwatch() {
 
   // User sets time manually
   function handleTime(e) {
-    setSeconds(parseInt(e.target.value));
+    if (e.target.value < 1) {
+      setSeconds(0);
+    } else {
+      setSeconds(parseInt(e.target.value));
+    }
   }
 
-  // When timer is active count
-  // When timer is inactive, add task to state
+  // When timer is active count...
+  // When timer is inactive, either add task to state if a new task or...
+  // If the task exists, edit the exsting state
   useEffect(() => {
     let interval = null;
     if (isActive) {
@@ -52,35 +59,37 @@ export function Stopwatch() {
       }, 1000);
     } else if (!isActive && seconds !== 0) {
       clearInterval(interval);
-      dispatch(
-        addTask({
-          id: formData.id,
-          task: formData.task,
-          time: seconds,
-        })
-      );
+      if (tasks.map((task) => task.taskName).includes(formData.taskName)) {
+        // Edit task in state
+        dispatch(
+          editTask({
+            taskName: formData.taskName,
+            time: seconds,
+          })
+        );
+      } else {
+        // Add new task to state
+        dispatch(
+          addTask({
+            taskName: formData.taskName,
+            time: seconds,
+          })
+        );
+      }
     }
     return () => clearInterval(interval);
-  }, [isActive]);
+  }, [isActive, dispatch, seconds, tasks]);
 
   return (
     <>
       <div>
         <form>
-          <label htmlFor='id'>id</label>
+          <label htmlFor='taskName'>Task Name</label>
           <input
             type='text'
-            name='id'
-            value={id}
-            id='id'
-            onChange={(e) => onChange(e)}
-          />
-          <label htmlFor='name'>Task</label>
-          <input
-            type='text'
-            name='task'
-            value={task}
-            id='task'
+            name='taskName'
+            value={taskName}
+            id='taskName'
             onChange={(e) => {
               onChange(e);
             }}
@@ -108,8 +117,7 @@ export function Stopwatch() {
             onClick={(e) => {
               e.preventDefault();
               setFormData({
-                id: '',
-                task: '',
+                taskName: '',
               });
               reset();
             }}
