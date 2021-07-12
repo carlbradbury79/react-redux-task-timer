@@ -9,6 +9,6 @@ export function TotalTime({ seconds }) {
       </span>
     );
   } else {
-    return <span>{seconds}s</span>;
+    return <span data-testid='secondSpan'>{seconds}s</span>;
   }
 }
