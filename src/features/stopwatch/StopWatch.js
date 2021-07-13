@@ -90,6 +90,7 @@ export function Stopwatch() {
             name='taskName'
             value={taskName}
             id='taskName'
+            placeholder='Enter task...'
             onChange={(e) => {
               onChange(e);
             }}
