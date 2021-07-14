@@ -9,7 +9,7 @@ export const Task = ({ task }) => {
 
   //   Individual Task Component
   return (
-    <li>
+    <li data-testid='individual-task'>
       {task.taskName} took {task.time}s{' '}
       <button
         onClick={() => dispatch(removeTask(task))}

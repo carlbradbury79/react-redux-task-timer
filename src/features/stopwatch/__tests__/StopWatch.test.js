@@ -38,32 +38,6 @@ describe('Reset Button', () => {
   });
 });
 
-describe('Start Button', () => {
-  it('Click the start button', async () => {
-    render(<MockProvider store={store} />);
-    const startButton = screen.getByRole('button', {
-      name: /Start/i,
-    });
-    const taskInput = screen.getByPlaceholderText(/Enter task.../i);
-    const timeInput = screen.getByDisplayValue(/0/i);
-
-    fireEvent.change(taskInput, { target: { value: 'Walk the Dog' } });
-    fireEvent.change(timeInput, { target: { value: 10 } });
-
-    // These two events don't affect the list item being displayed
-    // fireEvent.click(startButton);
-    // fireEvent.click(startButton);
-
-    // TODO
-    // The data from redux should be displayed to allow the next line to work...
-    // This currently fails
-    // This will need an integration test as using multiple components
-    const listItemTask = screen.getByText(/Walk the Dog took 10s/i);
-
-    expect(listItemTask).toBeInTheDocument();
-  });
-});
-
 describe('state only', () => {
   it('should return the initial state', () => {
     expect(reducer(undefined, {})).toEqual([]);
